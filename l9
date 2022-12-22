@@ -1,0 +1,36 @@
+#include <stdio.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdbool.h>
+
+int main() {
+    char s[100];
+    scanf("%s", s);
+    int count[256];
+    bool is_unique;
+    int min_i = 0, min_j = 0;
+    int len = strlen(s);
+    char s1[len];
+    for (int i = 0; i < len; i ++) {
+        for (int j = i; j < len; j ++) {
+            for (int k = 0; k < 255; k ++) count[k] = 0;
+                is_unique = true;
+                for (int k = i; k <= j; k++) {
+                    count[s[k]] ++;
+                    if (count[s[k]] > 1) {
+                        is_unique = false;
+                        break;
+                    }
+                }
+            if ((is_unique)&&(j - i >= min_j - min_i)) {
+            min_i = i;
+            min_j = j;
+            }
+        }
+    }
+    int k=0;
+    for (int i = min_i; i <= min_j; i ++) {
+        s1[k] = s[i];
+        k=k+1;}
+    printf("%s", s1);
+}
