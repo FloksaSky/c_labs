@@ -1,0 +1,66 @@
+#include <ctype.h>
+#include <stdio.h>
+#include <termios.h>
+#include <unistd.h>
+#include <stdio_ext.h>
+#include <locale.h>
+#include <stdlib.h>
+
+int mygetch()
+{
+    struct termios oldt, newt;
+    int c;
+    tcgetattr(STDIN_FILENO, &oldt);
+    newt = oldt;
+    newt.c_lflag &= ~(ICANON | ECHO);
+    tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+    c = getchar();
+    tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+    return c;
+}
+
+
+int main()
+{
+    char c;
+    int k_d=0, k_a=0, k_s=0, k_n=0;
+    while(1)
+    {
+        c = mygetch();
+        printf("%c", c);
+        if (c != 127 && c != 27)
+        {
+            if (isalpha(c)) 
+                k_a++;
+            
+            if (ispunct(c))
+                k_d++;
+
+            if (isspace(c))
+                k_s++;
+
+            if (c=='0' && k_d==0)
+                k_n++;
+            if (k_n>0 && k_d==0)
+                printf("No");
+            if(!(c=='.' || c==',' || c=='-' || c<='9' || c>='0'))
+                printf("No");
+            if (k_a>0){
+                printf("No");
+                }
+            if (k_d > 1) {
+                printf("No");
+                }
+            if (k_s>0) {
+                printf("No");
+                }
+        }   
+        else {
+            if (c == 127)
+                return 0;
+            else {if (c == 27)
+                __fpurge(stdin);}
+            }
+        }
+    return 0;
+}
